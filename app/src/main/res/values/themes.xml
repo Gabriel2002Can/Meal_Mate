@@ -9,6 +9,5 @@
     </style>
 
     <!-- Main app theme -->
-    <style name="Theme.MealMate" parent="android:Theme.Material.Light.NoActionBar">
-    </style>
+    <style name="Theme.MealMate" parent="android:Theme.Material.Light.NoActionBar"></style>
 </resources>

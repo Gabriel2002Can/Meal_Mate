@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Meal Mate</string>
+    <string name="title_activity_terms_and_condition">TermsAndConditionActivity</string>
 </resources>
