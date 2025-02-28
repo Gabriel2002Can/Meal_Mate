@@ -1,4 +1,7 @@
-**Coming next! Implementation of the following UI elements (with light and dark variations), generation of analytics charts, and recommendations based on previously chosen recipes.**
+**Coming next! Implementation of the following UI elements (with light and dark variations), UX elements, API integration, page functionalities, generation of analytics charts, and recommendations based on previously chosen recipes. And much more!**
+
+
+
 
 ***Splash Screen and T&C page***
 
