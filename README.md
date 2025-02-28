@@ -20,6 +20,7 @@
 
 ***Recipe Page and Specific Recipe Page***
 
-![image](https://github.com/user-attachments/assets/1785fbd8-85de-44a3-8e2f-c2de4ed2607f)
+![image](https://github.com/user-attachments/assets/ac5e52d0-2a7e-40f1-9d4b-0dd05ba410bb)
+
 
 
