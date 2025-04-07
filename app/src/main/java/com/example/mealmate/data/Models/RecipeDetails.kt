@@ -1,6 +1,6 @@
 package com.example.mealmate.data.Models
 
-data class Recipe(
+data class RecipeDetails(
     val aggregateLikes: Int,
     val analyzedInstructions: List<Any?>,
     val cheap: Boolean,

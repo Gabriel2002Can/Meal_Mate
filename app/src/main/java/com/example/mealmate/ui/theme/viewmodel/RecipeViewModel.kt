@@ -3,7 +3,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import com.example.mealmate.data.Models.MultipleRecipes
-import com.example.mealmate.data.Models.Recipe
+import com.example.mealmate.data.Models.RecipeDetails
 import com.example.mealmate.remote.RecipeRepository
 
 
@@ -15,8 +15,8 @@ class RecipeViewModel : ViewModel() {
 
     private val repository = RecipeRepository()
 
-    private val _recipes = mutableStateOf<List<Recipe>>(emptyList())
-    val recipes: State<List<Recipe>> = _recipes
+    private val _recipes = mutableStateOf<List<RecipeDetails>>(emptyList())
+    val recipes: State<List<RecipeDetails>> = _recipes
 
     private val _error = mutableStateOf("")
     val error: State<String> = _error
@@ -35,6 +35,25 @@ class RecipeViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<MultipleRecipes>, t: Throwable) {
+                _error.value = "Failed: ${t.message}"
+            }
+        })
+    }
+
+    private val _selectedRecipeDetails = mutableStateOf<RecipeDetails?>(null)
+    val selectedRecipeDetails: State<RecipeDetails?> = _selectedRecipeDetails
+
+    fun fetchRecipeDetails(id: Int) {
+        repository.getRecipeDetails(id).enqueue(object : Callback<RecipeDetails> {
+            override fun onResponse(call: Call<RecipeDetails>, response: Response<RecipeDetails>) {
+                if (response.isSuccessful && response.body() != null) {
+                    _selectedRecipeDetails.value = response.body()
+                } else {
+                    _error.value = "Something went wrong: ${response.code()}"
+                }
+            }
+
+            override fun onFailure(call: Call<RecipeDetails>, t: Throwable) {
                 _error.value = "Failed: ${t.message}"
             }
         })
