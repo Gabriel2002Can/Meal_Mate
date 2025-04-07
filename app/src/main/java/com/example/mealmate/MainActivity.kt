@@ -39,14 +39,31 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.room.Room
 import androidx.room.util.query
+import com.example.mealmate.database.RecipeDatabase
+import com.example.mealmate.remote.ApiInterface
+import com.example.mealmate.remote.RecipeRepository
 import com.example.mealmate.ui.theme.CustomBackgroundColor
+import com.example.mealmate.ui.theme.RecipeScreen
 import com.example.mealmate.ui.theme.viewmodel.RecipeViewModel
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val api = ApiInterface.create()
+        val db = Room.databaseBuilder(
+            applicationContext,
+            RecipeDatabase::class.java,
+            "recipe_database"
+        ).build()
+
+        val dao = db.recipeDao()
+        val repository = RecipeRepository(api, dao)
+
+        val viewModel = RecipeViewModel(repository)
 
         installSplashScreen()
 
@@ -55,7 +72,7 @@ class MainActivity : ComponentActivity() {
             MealMateTheme {
                 var showSplash by remember { mutableStateOf(true) }
 
-                // Delay 2 seconds then show main screen
+                //Delay 2 seconds then show main screen
                 LaunchedEffect(Unit) {
                     delay(2000)
                     showSplash = false
@@ -66,7 +83,7 @@ class MainActivity : ComponentActivity() {
                         if (showSplash) {
                             TermsAndConditions()
                         } else {
-                            RecipeScreen()
+                            RecipeScreen(viewModel = viewModel)
                         }
                     }
                 }
@@ -76,54 +93,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun RecipeScreen(viewModel: RecipeViewModel = viewModel()) {
-    val recipes by viewModel.recipes
-    val error by viewModel.error
-
-    var query by remember { mutableStateOf("") } //
-
-    Column(modifier = Modifier.padding(16.dp)) {
-        TextField(
-            value = query,
-            onValueChange = { query = it },
-            label = { Text("Search recipes") }
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(onClick = { viewModel.searchRecipes(query) }) {
-            Text("Search")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (error.isNotEmpty()) {
-            Text(text = error, color = Color.Red)
-        }
-
-        LazyColumn {
-            items(recipes) { recipe ->
-                Text(recipe.title ?: "recipe test")
-            }
-        }
-    }
-}
-
-@Composable
 fun TermsAndConditions(modifier: Modifier = Modifier) {
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize().background(CustomBackgroundColor)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-
-
-
-            Column(
-                modifier = Modifier.weight(1f).padding(16.dp)
-            ) {
-
+            Column(modifier = Modifier.weight(1f).padding(16.dp)) {
                 Text(
                     text = buildAnnotatedString {
                         append("Terms and Conditions\n\n")

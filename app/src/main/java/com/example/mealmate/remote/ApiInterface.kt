@@ -3,6 +3,9 @@ package com.example.mealmate.remote
 import com.example.mealmate.data.Models.MultipleRecipes
 import com.example.mealmate.data.Models.RecipeDetails
 import retrofit2.Call
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
@@ -16,13 +19,23 @@ interface ApiInterface {
 
     //Multiple recipes
     @GET("recipes/complexSearch")
-    fun getRecipes(
-        @Query("query") query: String
-    ): Call<MultipleRecipes>;
+    suspend fun getRecipes(@Query("query") query: String): Response<MultipleRecipes>
 
     //Single recipe
     @GET("recipes/{id}/information")
     fun getRecipeDetails(
         @Path("id") id: Int
     ): Call<RecipeDetails>;
+
+    //For Database
+    companion object {
+        fun create(): ApiInterface {
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://api.spoonacular.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            return retrofit.create(ApiInterface::class.java)
+        }
+    }
 }
