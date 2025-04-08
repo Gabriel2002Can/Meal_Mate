@@ -2,14 +2,14 @@ package com.example.mealmate.data.Models.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.mealmate.data.Models.ExtendedIngredient
-import com.example.mealmate.data.Models.Nutrition
+import com.example.mealmate.data.Models.InstructionDetailed
 
 //Without Nutrition
 @Entity(tableName = "recipes")
     data class RecipeEntity(
     @PrimaryKey val id: Int,
     val aggregateLikes: Int = 0,
-    val analyzedInstructions: List<String> = emptyList(),
+    val analyzedInstructions: List<InstructionDetailed> = emptyList(),
     val cheap: Boolean = false,
     val cookingMinutes: Int = 0,
     val creditsText: String = "",

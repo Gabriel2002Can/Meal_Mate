@@ -1,4 +1,5 @@
 package com.example.mealmate.ui.theme.viewmodel
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
@@ -39,25 +40,68 @@ class RecipeViewModel(
         }
     }
 
-    private val _selectedRecipeDetails = mutableStateOf<RecipeDetails?>(null)
-    val selectedRecipeDetails: State<RecipeDetails?> = _selectedRecipeDetails
+    private val _selectedRecipe = mutableStateOf<RecipeEntity?>(null)
+    val selectedRecipe: State<RecipeEntity?> = _selectedRecipe
 
-    fun fetchRecipeDetails(id: Int) {
-        repository.getRecipeDetails(id).enqueue(object : Callback<RecipeDetails> {
-            override fun onResponse(
-                call: Call<RecipeDetails>,
-                response: Response<RecipeDetails>
-            ) {
-                if (response.isSuccessful && response.body() != null) {
-                    _selectedRecipeDetails.value = response.body()
+    fun loadRecipeDetails(id: Int) {
+        viewModelScope.launch {
+            try {
+                // First check local DB
+                val cachedRecipe = repository.dao.getRecipeById(id)
+                if (cachedRecipe != null && cachedRecipe.instructions.isNotEmpty()) {
+                    _selectedRecipe.value = cachedRecipe
                 } else {
-                    _error.value = "Failed to load details: ${response.code()}"
-                }
-            }
+                    val response = repository.getRecipeDetails(id).execute()
+                    if (response.isSuccessful) {
+                        response.body()?.let { details ->
+                            val updatedRecipe = cachedRecipe?.copy(
+                                aggregateLikes = details.aggregateLikes,
+                                analyzedInstructions = details.analyzedInstructions,
+                                cheap = details.cheap,
+                                cookingMinutes = details.cookingMinutes,
+                                creditsText = details.creditsText ?: "",
+                                cuisines = details.cuisines,
+                                dairyFree = details.dairyFree,
+                                diets = details.diets,
+                                dishTypes = details.dishTypes,
+                                extendedIngredients = details.extendedIngredients,
+                                gaps = details.gaps ?: "",
+                                glutenFree = details.glutenFree,
+                                healthScore = details.healthScore,
+                                image = details.image,
+                                imageType = details.imageType,
+                                instructions = details.instructions ?: "",
+                                license = details.license ?: "",
+                                lowFodmap = details.lowFodmap,
+                                occasions = details.occasions,
+                                originalId = details.originalId,
+                                preparationMinutes = details.preparationMinutes,
+                                pricePerServing = details.pricePerServing,
+                                readyInMinutes = details.readyInMinutes,
+                                servings = details.servings,
+                                sourceName = details.sourceName ?: "",
+                                sourceUrl = details.sourceUrl ?: "",
+                                spoonacularScore = details.spoonacularScore,
+                                spoonacularSourceUrl = details.spoonacularSourceUrl ?: "",
+                                summary = details.summary ?: "",
+                                sustainable = details.sustainable,
+                                vegan = details.vegan,
+                                vegetarian = details.vegetarian,
+                                veryHealthy = details.veryHealthy,
+                                veryPopular = details.veryPopular,
+                                weightWatcherSmartPoints = details.weightWatcherSmartPoints,
+                            )
 
-            override fun onFailure(call: Call<RecipeDetails>, t: Throwable) {
-                _error.value = "Error loading details: ${t.message}"
+                            if (updatedRecipe != null) {
+                                repository.insertRecipe(updatedRecipe)
+                                _selectedRecipe.value = updatedRecipe
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ViewModel", "Error loading recipe details: ${e.message}")
             }
-        })
+        }
     }
 }

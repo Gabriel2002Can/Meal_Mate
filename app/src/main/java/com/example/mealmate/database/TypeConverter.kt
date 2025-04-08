@@ -2,6 +2,7 @@ package com.example.mealmate.database
 
 import androidx.room.TypeConverter
 import com.example.mealmate.data.Models.ExtendedIngredient
+import com.example.mealmate.data.Models.InstructionDetailed
 import com.example.mealmate.data.Models.Nutrition
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -47,5 +48,20 @@ class Converters {
     @TypeConverter
     fun toAny(value: String): Any? {
         return gson.fromJson(value, Any::class.java)
+    }
+
+    @TypeConverter
+    fun fromInstructionList(value: List<InstructionDetailed>?): String {
+        val gson = Gson()
+        val type = object : TypeToken<List<InstructionDetailed>>() {}.type
+        return gson.toJson(value, type)
+    }
+
+    // Convert JSON String back to List<InstructionDetailed>
+    @TypeConverter
+    fun toInstructionList(value: String): List<InstructionDetailed> {
+        val gson = Gson()
+        val type = object : TypeToken<List<InstructionDetailed>>() {}.type
+        return gson.fromJson(value, type)
     }
 }

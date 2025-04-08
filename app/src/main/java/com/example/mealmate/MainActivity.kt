@@ -1,22 +1,14 @@
 package com.example.mealmate
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 import androidx.compose.material3.Scaffold
@@ -24,11 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.mealmate.ui.theme.MealMateTheme
 import androidx.compose.material3.Button
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,14 +30,15 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.room.Room
-import androidx.room.util.query
 import com.example.mealmate.database.RecipeDatabase
 import com.example.mealmate.remote.ApiInterface
 import com.example.mealmate.remote.RecipeRepository
 import com.example.mealmate.ui.theme.CustomBackgroundColor
-import com.example.mealmate.ui.theme.RecipeScreen
+import com.example.mealmate.ui.theme.compose.RecipeScreen
 import com.example.mealmate.ui.theme.viewmodel.RecipeViewModel
 import kotlinx.coroutines.delay
+import androidx.navigation.compose.rememberNavController
+import com.example.mealmate.ui.theme.compose.NavGraph
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +63,8 @@ class MainActivity : ComponentActivity() {
             MealMateTheme {
                 var showSplash by remember { mutableStateOf(true) }
 
+                val navController = rememberNavController()
+
                 //Delay 2 seconds then show main screen
                 LaunchedEffect(Unit) {
                     delay(2000)
@@ -83,7 +76,7 @@ class MainActivity : ComponentActivity() {
                         if (showSplash) {
                             TermsAndConditions()
                         } else {
-                            RecipeScreen(viewModel = viewModel)
+                            NavGraph(viewModel = viewModel)
                         }
                     }
                 }

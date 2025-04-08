@@ -1,7 +1,6 @@
 package com.example.mealmate.remote
 import android.util.Log
 import retrofit2.Call
-import com.example.mealmate.data.Models.MultipleRecipes
 import com.example.mealmate.data.Models.RecipeDetails
 import com.example.mealmate.data.Models.entity.RecipeDao
 import com.example.mealmate.data.Models.entity.RecipeEntity
@@ -9,7 +8,7 @@ import com.example.mealmate.data.Models.entity.RecipeEntity
 
 class RecipeRepository(
     private val api: ApiInterface,
-    private val dao: RecipeDao
+    val dao: RecipeDao
 ) {
     private val TAG = "RecipeRepository" // Set a log tag for your repository
 
@@ -66,6 +65,64 @@ class RecipeRepository(
     fun getRecipeDetails(id: Int): Call<RecipeDetails> {
         Log.d(TAG, "Fetching details for recipe with id: $id")
         return api.getRecipeDetails(id)
+    }
+
+    suspend fun getOrFetchRecipeDetails(id: Int): RecipeEntity? {
+        // Try fetching from DB first
+        val cached = dao.getRecipeById(id)
+        if (cached != null && cached.instructions.isNotBlank()) {
+            return cached
+        }
+
+        return try {
+            val response = api.getRecipeDetails(id).execute()
+            if (response.isSuccessful && response.body() != null) {
+                val details = response.body()!!
+                val updatedRecipe = cached?.copy(
+                    aggregateLikes = details.aggregateLikes,
+                    analyzedInstructions = details.analyzedInstructions,
+                    cheap = details.cheap,
+                    cookingMinutes = details.cookingMinutes,
+                    creditsText = details.creditsText,
+                    cuisines = details.cuisines,
+                    dairyFree = details.dairyFree,
+                    diets = details.diets,
+                    dishTypes = details.dishTypes,
+                    extendedIngredients = details.extendedIngredients,
+                    gaps = details.gaps,
+                    glutenFree = details.glutenFree,
+                    healthScore = details.healthScore,
+                    image = details.image,
+                    imageType = details.imageType,
+                    instructions = details.instructions,
+                    license = details.license,
+                    lowFodmap = details.lowFodmap,
+                    occasions = details.occasions,
+                    originalId = details.originalId,
+                    preparationMinutes = details.preparationMinutes,
+                    pricePerServing = details.pricePerServing,
+                    readyInMinutes = details.readyInMinutes,
+                    servings = details.servings,
+                    sourceName = details.sourceName,
+                    sourceUrl = details.sourceUrl,
+                    spoonacularScore = details.spoonacularScore,
+                    spoonacularSourceUrl = details.spoonacularSourceUrl,
+                    summary = details.summary,
+                    sustainable = details.sustainable,
+                    vegan = details.vegan,
+                    vegetarian = details.vegetarian,
+                    veryHealthy = details.veryHealthy,
+                    veryPopular = details.veryPopular,
+                    weightWatcherSmartPoints = details.weightWatcherSmartPoints,
+                ) ?: return null
+
+                dao.insertRecipe(updatedRecipe)
+                updatedRecipe
+            } else null
+        } catch (e: Exception) {
+            Log.e("RecipeRepository", "Error fetching details: ${e.message}", e)
+            null
+        }
     }
 
     suspend fun insertRecipe(recipe: RecipeEntity) {

@@ -21,4 +21,7 @@ interface RecipeDao {
 
     @Query("SELECT * FROM recipes WHERE searchQuery = :query")
     suspend fun getRecipesByName(query: String): List<RecipeEntity>
+
+    @Query("SELECT * FROM recipes WHERE id = :id LIMIT 1")
+    suspend fun getRecipeById(id: Int): RecipeEntity?
 }
