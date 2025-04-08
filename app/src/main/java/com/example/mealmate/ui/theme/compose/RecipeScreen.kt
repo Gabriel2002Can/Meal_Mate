@@ -23,7 +23,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -91,7 +90,8 @@ fun RecipeItem(recipe: RecipeEntity, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            // Displaying the recipe image
+
+            //Displaying the recipe image
             Image(
                 painter = rememberAsyncImagePainter(recipe.image),
                 contentDescription = recipe.title,
@@ -102,9 +102,9 @@ fun RecipeItem(recipe: RecipeEntity, onClick: () -> Unit) {
                     .background(Color.Gray)
             )
 
-            // Displaying the recipe title
+            //Displaying the recipe title
             Text(
-                text = recipe.title ?: "Recipe title missing",
+                text = recipe.title,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.weight(1f)
             )
@@ -141,13 +141,19 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel, recipeId: Int, onBack: () -> 
             )
 
             Spacer(modifier = Modifier.height(12.dp))
+
+            //Tile
             Text(text = it.title, style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
+
+            //Summary
             Text(text = HtmlCompat.fromHtml(it.summary, HtmlCompat.FROM_HTML_MODE_LEGACY).toString())
             Spacer(modifier = Modifier.height(12.dp))
             Text(text = "Instructions:", style = MaterialTheme.typography.titleMedium)
             Text(text = it.instructions.ifBlank { "No instructions provided." })
         }
+
+        //Loading indicator
     } ?: run {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
