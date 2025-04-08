@@ -36,6 +36,7 @@ import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.mealmate.data.Models.entity.RecipeEntity
+import com.example.mealmate.ui.theme.MealMateTheme
 
 
 @Composable
@@ -43,6 +44,7 @@ fun RecipeScreen(viewModel: RecipeViewModel, onRecipeSelected: (Int) -> Unit) {
     var query by remember { mutableStateOf("") }
     val recipes = viewModel.recipes.value
 
+    MealMateTheme {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         OutlinedTextField(
             value = query,
@@ -75,6 +77,7 @@ fun RecipeScreen(viewModel: RecipeViewModel, onRecipeSelected: (Int) -> Unit) {
             }
         }
     }
+}
 }
 
 @Composable

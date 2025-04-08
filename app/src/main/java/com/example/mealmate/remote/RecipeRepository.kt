@@ -10,9 +10,9 @@ class RecipeRepository(
     private val api: ApiInterface,
     val dao: RecipeDao
 ) {
-    private val TAG = "RecipeRepository" // Set a log tag for your repository
+    private val TAG = "RecipeRepository"
 
-    // Check database first, then API
+    //Check database first, then API
     suspend fun getRecipes(query: String): List<RecipeEntity> {
         Log.d(TAG, "Searching for recipes with query: $query")
 
@@ -61,14 +61,13 @@ class RecipeRepository(
     }
 
 
-    // For single recipe details
+    //For single recipe details
     fun getRecipeDetails(id: Int): Call<RecipeDetails> {
         Log.d(TAG, "Fetching details for recipe with id: $id")
         return api.getRecipeDetails(id)
     }
 
     suspend fun getOrFetchRecipeDetails(id: Int): RecipeEntity? {
-        // Try fetching from DB first
         val cached = dao.getRecipeById(id)
         if (cached != null && cached.instructions.isNotBlank()) {
             return cached
