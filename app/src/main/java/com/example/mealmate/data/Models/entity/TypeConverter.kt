@@ -57,7 +57,7 @@ class Converters {
         return gson.toJson(value, type)
     }
 
-    // Convert JSON String back to List<InstructionDetailed>
+    //Convert JSON String to List<InstructionDetailed>
     @TypeConverter
     fun toInstructionList(value: String): List<InstructionDetailed> {
         val gson = Gson()

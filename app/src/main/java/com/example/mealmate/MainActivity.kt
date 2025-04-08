@@ -38,6 +38,7 @@ import com.example.mealmate.ui.theme.compose.RecipeScreen
 import com.example.mealmate.ui.theme.viewmodel.RecipeViewModel
 import kotlinx.coroutines.delay
 import com.example.mealmate.ui.theme.compose.RecipeDetailScreen
+import com.example.mealmate.ui.theme.compose.TermsAndConditions
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +85,7 @@ class MainActivity : ComponentActivity() {
                                     viewModel = viewModel,
                                     recipeId = selectedRecipeId!!
                                 ) {
-                                    selectedRecipeId = null // go back to list
+                                    selectedRecipeId = null
                                 }
                             }
                             else -> {
@@ -103,36 +104,4 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun TermsAndConditions(
-    modifier: Modifier = Modifier,
-    onAccept: () -> Unit
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize().background(CustomBackgroundColor)
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.weight(1f).padding(16.dp)) {
-                Text(
-                    text = buildAnnotatedString {
-                        append("Terms and Conditions\n\n")
-                        pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
-                        append("Introduction\n")
-                        pop()
-                        append("Welcome to Meal Mate... etc")
-                    },
-                    modifier = Modifier.padding(16.dp).weight(1f),
-                    color = Color.White
-                )
 
-                Button(
-                    onClick = { onAccept() }, // now it triggers the state change
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    Text(text = "Accept Terms and Conditions")
-                }
-            }
-        }
-    }
-}
