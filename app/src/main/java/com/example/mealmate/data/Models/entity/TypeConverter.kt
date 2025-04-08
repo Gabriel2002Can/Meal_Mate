@@ -1,4 +1,4 @@
-package com.example.mealmate.database
+package com.example.mealmate.data.Models.entity
 
 import androidx.room.TypeConverter
 import com.example.mealmate.data.Models.ExtendedIngredient

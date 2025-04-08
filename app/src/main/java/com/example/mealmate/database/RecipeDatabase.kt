@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.mealmate.data.Models.entity.RecipeDao
+import com.example.mealmate.data.Models.entity.Converters
 import com.example.mealmate.data.Models.entity.RecipeEntity
 
 @Database(entities = [RecipeEntity::class], version = 2)

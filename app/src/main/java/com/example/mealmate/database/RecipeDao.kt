@@ -1,8 +1,9 @@
-package com.example.mealmate.data.Models.entity
+package com.example.mealmate.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.mealmate.data.Models.entity.RecipeEntity
 
 @Dao
 interface RecipeDao {

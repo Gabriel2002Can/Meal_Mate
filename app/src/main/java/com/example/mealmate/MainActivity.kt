@@ -37,8 +37,7 @@ import com.example.mealmate.ui.theme.CustomBackgroundColor
 import com.example.mealmate.ui.theme.compose.RecipeScreen
 import com.example.mealmate.ui.theme.viewmodel.RecipeViewModel
 import kotlinx.coroutines.delay
-import androidx.navigation.compose.rememberNavController
-import com.example.mealmate.ui.theme.compose.NavGraph
+import com.example.mealmate.ui.theme.compose.RecipeDetailScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,8 +61,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             MealMateTheme {
                 var showSplash by remember { mutableStateOf(true) }
+                var selectedRecipeId by remember { mutableStateOf<Int?>(null) }
+                var acceptedTerms by remember { mutableStateOf(false) }
 
-                val navController = rememberNavController()
 
                 //Delay 2 seconds then show main screen
                 LaunchedEffect(Unit) {
@@ -73,10 +73,28 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        if (showSplash) {
-                            TermsAndConditions()
-                        } else {
-                            NavGraph(viewModel = viewModel)
+                        when {
+                            !acceptedTerms -> {
+                                TermsAndConditions(onAccept = {
+                                    acceptedTerms = true
+                                })
+                            }
+                            selectedRecipeId != null -> {
+                                RecipeDetailScreen(
+                                    viewModel = viewModel,
+                                    recipeId = selectedRecipeId!!
+                                ) {
+                                    selectedRecipeId = null // go back to list
+                                }
+                            }
+                            else -> {
+                                RecipeScreen(
+                                    viewModel = viewModel,
+                                    onRecipeSelected = { recipeId ->
+                                        selectedRecipeId = recipeId
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -86,7 +104,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TermsAndConditions(modifier: Modifier = Modifier) {
+fun TermsAndConditions(
+    modifier: Modifier = Modifier,
+    onAccept: () -> Unit
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize().background(CustomBackgroundColor)
@@ -99,23 +120,14 @@ fun TermsAndConditions(modifier: Modifier = Modifier) {
                         pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
                         append("Introduction\n")
                         pop()
-
-                        append("Welcome to Meal Mate! These Terms and Conditions (\"Terms\") govern your access to and use of the Meal Mate application (\"App\"). By using the App, you agree to comply with and be bound by these Terms. Please read them carefully before using the App.\n")
-                        append("\n")
-
-                        append("1. ")
-                        pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
-                        append("User Agreement\n")
-                        pop()
-
-                        append("By accessing and using Meal Mate, you agree to these Terms and Conditions, as well as any additional guidelines or rules that may apply to specific features or services provided through the App.\n")
+                        append("Welcome to Meal Mate... etc")
                     },
                     modifier = Modifier.padding(16.dp).weight(1f),
                     color = Color.White
                 )
 
                 Button(
-                    onClick = {},
+                    onClick = { onAccept() }, // now it triggers the state change
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(text = "Accept Terms and Conditions")

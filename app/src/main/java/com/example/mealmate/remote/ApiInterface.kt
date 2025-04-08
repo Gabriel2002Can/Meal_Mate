@@ -21,6 +21,7 @@ interface ApiInterface {
     @GET("recipes/complexSearch")
     suspend fun getRecipes(@Query("query") query: String): Response<MultipleRecipes>
 
+    @Headers("x-api-key: 600bb229edff4606877633f91de9a3d7")
     //Single recipe
     @GET("recipes/{id}/information")
     fun getRecipeDetails(

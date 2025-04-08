@@ -2,7 +2,7 @@ package com.example.mealmate.remote
 import android.util.Log
 import retrofit2.Call
 import com.example.mealmate.data.Models.RecipeDetails
-import com.example.mealmate.data.Models.entity.RecipeDao
+import com.example.mealmate.database.RecipeDao
 import com.example.mealmate.data.Models.entity.RecipeEntity
 
 
