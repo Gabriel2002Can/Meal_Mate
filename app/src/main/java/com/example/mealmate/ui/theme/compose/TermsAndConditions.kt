@@ -16,6 +16,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.mealmate.ui.theme.CustomBackgroundColor
+import com.example.mealmate.ui.theme.primaryLight
+import com.example.mealmate.ui.theme.secondaryLight
 
 @Composable
 fun TermsAndConditions(
