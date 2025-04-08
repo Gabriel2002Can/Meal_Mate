@@ -36,7 +36,9 @@ import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.mealmate.data.Models.entity.RecipeEntity
-import com.example.mealmate.ui.theme.MealMateTheme
+import com.example.mealmate.ui.theme.CustomBackgroundColor
+import com.example.mealmate.ui.theme.primaryLight
+import com.example.mealmate.ui.theme.secondaryLight
 
 
 @Composable
@@ -44,13 +46,25 @@ fun RecipeScreen(viewModel: RecipeViewModel, onRecipeSelected: (Int) -> Unit) {
     var query by remember { mutableStateOf("") }
     val recipes = viewModel.recipes.value
 
-    MealMateTheme {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize().padding(16.dp)
+            .background(primaryLight)
+    )
+    {
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+                .background(CustomBackgroundColor)
+        )
+
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
             label = { Text("Search Recipes") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().background(secondaryLight),
             singleLine = true,
             trailingIcon = {
                 IconButton(onClick = {
@@ -64,7 +78,7 @@ fun RecipeScreen(viewModel: RecipeViewModel, onRecipeSelected: (Int) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         if (recipes.isEmpty()) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(Modifier.fillMaxSize().background(primaryLight), contentAlignment = Alignment.Center) {
                 Text("No recipes found or still loading...")
             }
         } else {
@@ -78,7 +92,6 @@ fun RecipeScreen(viewModel: RecipeViewModel, onRecipeSelected: (Int) -> Unit) {
         }
     }
 }
-}
 
 @Composable
 fun RecipeItem(recipe: RecipeEntity, onClick: () -> Unit) {
@@ -87,6 +100,7 @@ fun RecipeItem(recipe: RecipeEntity, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable { onClick() }
+            .background(primaryLight)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
