@@ -31,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
@@ -112,11 +114,11 @@ fun RecipeItem(recipe: RecipeEntity, onClick: () -> Unit) {
             Image(
                 painter = rememberAsyncImagePainter(recipe.image),
                 contentDescription = recipe.title,
+                contentScale = ContentScale.Crop, // Fill the circle shape
                 modifier = Modifier
+                    .padding(start = 8.dp, end = 16.dp)
                     .size(100.dp)
-                    .padding(end = 16.dp)
                     .clip(CircleShape)
-                    .background(Color.Gray)
             )
 
             //Displaying the recipe title

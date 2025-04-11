@@ -3,10 +3,19 @@ package com.example.mealmate.ui.theme.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,11 +23,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.mealmate.ui.theme.CustomBackgroundColor
 import com.example.mealmate.ui.theme.primaryLight
 import com.example.mealmate.ui.theme.secondaryLight
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TermsAndConditions(
     modifier: Modifier = Modifier,
@@ -26,27 +37,49 @@ fun TermsAndConditions(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize().background(CustomBackgroundColor)
+        modifier = modifier.fillMaxSize().background(primaryLight)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.weight(1f).padding(16.dp)) {
+            // Add the TopAppBar with custom height
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Terms & Conditions",
+                        color = Color.White,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                },
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = CustomBackgroundColor),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            )
+
+            Column(modifier = Modifier
+                .padding(start = 32.dp, end = 32.dp, top = 30.dp)
+                .weight(1f)
+            ){
                 Text(
-                    text = buildAnnotatedString {
-                        append("Terms and Conditions\n\n")
-                        pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
-                        append("Introduction\n")
-                        pop()
-                        append("Welcome to Meal Mate... etc")
-                    },
-                    modifier = Modifier.padding(16.dp).weight(1f),
-                    color = Color.White
+                    text = "Welcome to Meal Mate!\n\n" +
+                            "These Terms and Conditions (“Terms\") govern your access to and use of the Meal Mate application (\"App\"). By using the App, you agree to comply with and be bound by these Terms. Please read them carefully before using the App.\n\n" +
+                            "By accessing and using Meal Mate, you agree to these Terms, as well as any additional guidelines or rules that may apply to specific features or services provided through the App.",
+                    color = Color.Black
                 )
 
                 Button(
                     onClick = { onAccept() },
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier
+                        .padding(top = 30.dp)
+                        .height(60.dp)
+                        .width(110.dp)
+                        .align(Alignment.CenterHorizontally),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = CustomBackgroundColor,
+                        contentColor = Color.White
+                    )
                 ) {
-                    Text(text = "Accept Terms and Conditions")
+                    Text(text = "Accept")
                 }
             }
         }

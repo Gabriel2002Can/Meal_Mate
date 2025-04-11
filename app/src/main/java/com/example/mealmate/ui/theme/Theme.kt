@@ -22,7 +22,6 @@ private val DarkColorScheme = darkColorScheme(
     //Light Orange
     secondary = Color(0xFFF2D3C8),
 
-
     tertiary = Pink80
 )
 
