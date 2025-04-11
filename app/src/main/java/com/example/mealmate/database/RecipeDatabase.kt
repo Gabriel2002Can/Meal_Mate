@@ -9,11 +9,13 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.mealmate.data.Models.entity.Converters
 import com.example.mealmate.data.Models.entity.RecipeEntity
+import com.example.mealmate.data.Models.entity.ProfileEntity
 
-@Database(entities = [RecipeEntity::class], version = 2)
+@Database(entities = [RecipeEntity::class, ProfileEntity::class], version = 4)
 @TypeConverters(Converters::class)
 abstract class RecipeDatabase : RoomDatabase() {
     abstract fun recipeDao(): RecipeDao
+    abstract fun profileDao(): ProfileDao // Add for profile
 
     companion object {
         @Volatile

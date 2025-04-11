@@ -58,7 +58,9 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             RecipeDatabase::class.java,
             "recipe_database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration() // Add this to handle schema changes
+            .build()
 
         val dao = db.recipeDao()
         val repository = RecipeRepository(api, dao)
