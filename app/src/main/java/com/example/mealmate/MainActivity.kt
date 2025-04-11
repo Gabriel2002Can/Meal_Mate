@@ -41,6 +41,13 @@ import kotlinx.coroutines.delay
 import com.example.mealmate.ui.theme.compose.RecipeDetailScreen
 import com.example.mealmate.ui.theme.compose.TermsAndConditions
 import com.example.mealmate.ui.theme.compose.HomeScreen
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.example.mealmate.ui.theme.compose.GroceryScreen
+import com.example.mealmate.ui.theme.compose.ProfileScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +72,9 @@ class MainActivity : ComponentActivity() {
             MealMateTheme {
                 var showSplash by remember { mutableStateOf(true) }
                 var acceptedTerms by remember { mutableStateOf(false) }
+                var selectedRecipeId by remember { mutableStateOf<Int?>(null) }
 
+                val navController = rememberNavController()
 
                 //Delay 2 seconds then show main screen
                 LaunchedEffect(Unit) {
@@ -80,9 +89,42 @@ class MainActivity : ComponentActivity() {
                                 TermsAndConditions(onAccept = {
                                     acceptedTerms = true
                                 })
-                            } else -> {
-                                val navController = rememberNavController()
-                                HomeScreen(navController = navController)
+                            }
+
+                            else -> {
+                                NavHost(navController = navController, startDestination = "home") {
+                                    composable("home") {
+                                        HomeScreen(navController = navController)
+                                    }
+                                    composable("recipes") {
+                                        RecipeScreen(
+                                            navController = navController,
+                                            viewModel = viewModel,
+                                            onRecipeSelected = { recipeId ->
+                                                navController.navigate("recipeDetail/$recipeId")
+                                            }
+                                        )
+                                    }
+                                    composable(
+                                        route = "recipeDetail/{recipeId}",
+                                        arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+                                    ) { backStackEntry ->
+                                        val recipeId = backStackEntry.arguments?.getInt("recipeId")
+                                        recipeId?.let {
+                                            RecipeDetailScreen(
+                                                viewModel = viewModel,
+                                                recipeId = it,
+                                                onBack = { navController.popBackStack() }
+                                            )
+                                        }
+                                    }
+                                    composable("grocery") {
+                                        GroceryScreen(navController = navController)
+                                    }
+                                    composable("profile") {
+                                        ProfileScreen(navController = navController)
+                                    }
+                                }
                             }
                         }
                     }
@@ -91,5 +133,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-

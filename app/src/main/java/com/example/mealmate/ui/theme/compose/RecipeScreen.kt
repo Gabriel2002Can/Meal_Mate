@@ -18,11 +18,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,8 +36,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.mealmate.data.Models.entity.RecipeEntity
@@ -43,30 +48,47 @@ import com.example.mealmate.ui.theme.primaryLight
 import com.example.mealmate.ui.theme.secondaryLight
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RecipeScreen(viewModel: RecipeViewModel, onRecipeSelected: (Int) -> Unit) {
+fun RecipeScreen(
+    viewModel: RecipeViewModel,
+    onRecipeSelected: (Int) -> Unit,
+    navController: NavController
+) {
     var query by remember { mutableStateOf("") }
     val recipes = viewModel.recipes.value
 
     Column(
         modifier = Modifier
-            .fillMaxSize().padding(16.dp)
+            .fillMaxSize()
             .background(primaryLight)
     )
     {
-
-        Box(
+        // Add TopAppBar at the top of the screen
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Recipes",
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            },
+            colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = CustomBackgroundColor),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
-                .background(CustomBackgroundColor)
+                .height(50.dp)
         )
 
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
             label = { Text("Search Recipes") },
-            modifier = Modifier.fillMaxWidth().background(secondaryLight),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp) // Padding above search bar
+                .padding(horizontal = 16.dp) // Padding on sides of search bar
+                .background(secondaryLight),
             singleLine = true,
             trailingIcon = {
                 IconButton(onClick = {
@@ -79,19 +101,32 @@ fun RecipeScreen(viewModel: RecipeViewModel, onRecipeSelected: (Int) -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (recipes.isEmpty()) {
-            Box(Modifier.fillMaxSize().background(primaryLight), contentAlignment = Alignment.Center) {
-                Text("No recipes found or still loading...")
-            }
-        } else {
-            LazyColumn {
-                items(recipes) { recipe ->
-                    RecipeItem(recipe = recipe) {
-                        onRecipeSelected(recipe.id)
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            if (recipes.isEmpty()) {
+                Box(
+                    Modifier.fillMaxSize().background(primaryLight),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("No recipes found or still loading...")
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(recipes) { recipe ->
+                        RecipeItem(recipe = recipe) {
+                            onRecipeSelected(recipe.id)
+                        }
                     }
                 }
             }
         }
+
+        BottomNavBar(navController = navController)
     }
 }
 
