@@ -25,6 +25,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.mealmate.ui.theme.CustomBackgroundColor
 import com.example.mealmate.ui.theme.primaryLight
 import com.example.mealmate.ui.theme.secondaryLight
@@ -40,7 +41,6 @@ fun TermsAndConditions(
         modifier = modifier.fillMaxSize().background(primaryLight)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Add the TopAppBar with custom height
             TopAppBar(
                 title = {
                     Text(
@@ -79,7 +79,10 @@ fun TermsAndConditions(
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = "Accept")
+                    Text(
+                        text = "Accept",
+                        fontSize = 16.sp
+                    )
                 }
             }
         }

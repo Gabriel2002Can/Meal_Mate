@@ -29,6 +29,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.mealmate.database.RecipeDatabase
 import com.example.mealmate.remote.ApiInterface
@@ -39,6 +40,7 @@ import com.example.mealmate.ui.theme.viewmodel.RecipeViewModel
 import kotlinx.coroutines.delay
 import com.example.mealmate.ui.theme.compose.RecipeDetailScreen
 import com.example.mealmate.ui.theme.compose.TermsAndConditions
+import com.example.mealmate.ui.theme.compose.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +64,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             MealMateTheme {
                 var showSplash by remember { mutableStateOf(true) }
-                var selectedRecipeId by remember { mutableStateOf<Int?>(null) }
                 var acceptedTerms by remember { mutableStateOf(false) }
 
 
@@ -79,22 +80,9 @@ class MainActivity : ComponentActivity() {
                                 TermsAndConditions(onAccept = {
                                     acceptedTerms = true
                                 })
-                            }
-                            selectedRecipeId != null -> {
-                                RecipeDetailScreen(
-                                    viewModel = viewModel,
-                                    recipeId = selectedRecipeId!!
-                                ) {
-                                    selectedRecipeId = null
-                                }
-                            }
-                            else -> {
-                                RecipeScreen(
-                                    viewModel = viewModel,
-                                    onRecipeSelected = { recipeId ->
-                                        selectedRecipeId = recipeId
-                                    }
-                                )
+                            } else -> {
+                                val navController = rememberNavController()
+                                HomeScreen(navController = navController)
                             }
                         }
                     }
