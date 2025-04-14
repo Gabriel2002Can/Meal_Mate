@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
                             else -> {
                                 NavHost(navController = navController, startDestination = "home") {
                                     composable("home") {
-                                        HomeScreen(navController = navController)
+                                        HomeScreen(navController = navController, viewModel = viewModel)
                                     }
                                     composable("recipes") {
                                         RecipeScreen(

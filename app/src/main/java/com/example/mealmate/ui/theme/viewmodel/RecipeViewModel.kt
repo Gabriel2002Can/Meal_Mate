@@ -84,6 +84,7 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     // Grocery list
     private val _groceryList = mutableStateListOf<Pair<String, String>>()
     val groceryList: List<Pair<String, String>> = _groceryList
+    val selectedItems = mutableStateListOf<String>()
 
     fun addIngredientsToGroceryList(ingredients: List<ExtendedIngredientEntity>) {
         _groceryList.addAll(ingredients.map { it.name to it.aisle })
@@ -92,6 +93,23 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     // Remove item from grocery list
     fun removeItemFromGroceryList(item: String) {
         _groceryList.removeAll { it.first == item }
+    }
+
+    // Get recipe by id to display on home page
+    // LiveData or State to hold the recipe data
+    private val _featuredRecipe = mutableStateOf<RecipeEntity?>(null)
+    val featuredRecipe: State<RecipeEntity?> = _featuredRecipe
+
+    // Fetch recipe by ID from the database
+    fun getRecipeById(id: Int) {
+        viewModelScope.launch {
+            try {
+                val recipe = repository.getRecipeById(id)
+                _featuredRecipe.value = recipe
+            } catch (e: Exception) {
+                _error.value = "Failed to load featured recipe: ${e.message}"
+            }
+        }
     }
 
 }

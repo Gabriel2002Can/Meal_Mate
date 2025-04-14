@@ -54,6 +54,10 @@ class RecipeRepository(
         return emptyList()
     }
 
+    // Function to get a recipe by its ID
+    suspend fun getRecipeById(id: Int): RecipeEntity? {
+        return dao.getRecipeById(id)
+    }
 
     // Users when a user clicks on a specific recipe
     // Displays full details for the recipe
