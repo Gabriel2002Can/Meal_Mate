@@ -29,8 +29,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mealmate.ui.theme.Orange
 import com.example.mealmate.ui.theme.lightOrange
@@ -43,11 +46,13 @@ fun GroceryScreen(
     navController: NavController,
     viewModel: RecipeViewModel
 ) {
+    val groceryList = remember { viewModel.groceryList }
+
     // Track selected items
     val selectedItems = remember { mutableStateListOf<String>() }
 
-    // Access the grocery list from the ViewModel
-    val groceryList = viewModel.groceryList
+    // Group items by aisle
+    val groupedItems = groceryList.groupBy { it.second }
 
     Column(
         modifier = Modifier
@@ -75,47 +80,68 @@ fun GroceryScreen(
                     .height(50.dp)
             )
 
-            if (groceryList.isNotEmpty()) {
+            if (groupedItems.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                 ) {
-                    items(groceryList) { ingredientName ->  // Use groceryList directly from the ViewModel
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                        ) {
-                            Checkbox(
-                                checked = selectedItems.contains(ingredientName),
-                                onCheckedChange = {
-                                    if (it) selectedItems.add(ingredientName)
-                                    else selectedItems.remove(ingredientName)
-                                },
-                                colors = CheckboxDefaults.colors(
-                                    checkedColor = Orange
-                                )
-                            )
-
+                    groupedItems.forEach { (aisle, items) ->
+                        // Display aisle name
+                        item {
                             Text(
-                                text = ingredientName,
-                                modifier = Modifier.weight(1f)
-                            )
-
-                            IconButton(
-                                onClick = {
-                                    selectedItems.remove(ingredientName)
-                                    viewModel.removeItemFromGroceryList(ingredientName)  // Call ViewModel to remove item
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Remove Item",
-                                    tint = Orange
+                                text = aisle,
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                style = TextStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp
                                 )
+                            )
+                        }
+
+                        // Display checkboxes for ingredients in this aisle
+                        items(items) { (ingredientName, aisle) ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp)
+                            ) {
+                                Checkbox(
+                                    checked = selectedItems.contains(ingredientName),
+                                    onCheckedChange = {
+                                        if (it) selectedItems.add(ingredientName)
+                                        else selectedItems.remove(ingredientName)
+                                    },
+                                    colors = CheckboxDefaults.colors(
+                                        checkedColor = Orange
+                                    )
+                                )
+
+                                Text(
+                                    text = ingredientName,
+                                    modifier = Modifier.weight(1f)
+                                )
+
+                                // 'X' button to remove the item
+                                IconButton(
+                                    onClick = {
+                                        selectedItems.remove(ingredientName)
+                                        viewModel.removeItemFromGroceryList(ingredientName)
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Remove Item",
+                                        tint = Orange
+                                    )
+                                }
                             }
+                        }
+
+                        // Add space between aisles
+                        item {
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
                 }
@@ -127,13 +153,13 @@ fun GroceryScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Your grocery list is empty.",
-                        color = Color.Gray
+                        text = "Grocery list is empty.",
                     )
                 }
             }
         }
 
+        // Bottom navigation bar
         BottomNavBar(navController = navController)
     }
 }

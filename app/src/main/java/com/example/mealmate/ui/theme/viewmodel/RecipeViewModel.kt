@@ -82,16 +82,16 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     }
 
     // Grocery list
-    private val _groceryList = mutableStateListOf<String>()
-    val groceryList: List<String> = _groceryList
+    private val _groceryList = mutableStateListOf<Pair<String, String>>()
+    val groceryList: List<Pair<String, String>> = _groceryList
 
     fun addIngredientsToGroceryList(ingredients: List<ExtendedIngredientEntity>) {
-        _groceryList.addAll(ingredients.map { it.name })
+        _groceryList.addAll(ingredients.map { it.name to it.aisle })
     }
 
     // Remove item from grocery list
     fun removeItemFromGroceryList(item: String) {
-        _groceryList.remove(item)
+        _groceryList.removeAll { it.first == item }
     }
 
 }
