@@ -1,5 +1,7 @@
 package com.example.mealmate.data.Models
 
+// This represents the API model
+
 data class RecipeDetails(
     val aggregateLikes: Int,
     val analyzedInstructions: List<InstructionDetailed>,

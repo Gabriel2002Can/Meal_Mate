@@ -2,82 +2,73 @@ package com.example.mealmate.remote
 import android.util.Log
 import retrofit2.Call
 import com.example.mealmate.data.Models.RecipeDetails
+import com.example.mealmate.data.Models.entity.ExtendedIngredientEntity
 import com.example.mealmate.database.RecipeDao
 import com.example.mealmate.data.Models.entity.RecipeEntity
-
+import retrofit2.Response
 
 class RecipeRepository(
-    private val api: ApiInterface,
-    val dao: RecipeDao
+    // Takes two dependencies via constructor injection
+    private val api: ApiInterface, // The interface used to make requests to the API
+    val dao: RecipeDao, // The data access object for Room database operations
 ) {
-    private val TAG = "RecipeRepository"
-
-    //Check database first, then API
+    // Used when user performs a search
+    // Displays recipes with basic info (title and image)
     suspend fun getRecipes(query: String): List<RecipeEntity> {
-        Log.d(TAG, "Searching for recipes with query: $query")
+        Log.d("RecipeRepository", "getRecipes called with query: $query")
 
-        val cachedRecipes = dao.getRecipesByName(query)
-        if (cachedRecipes.isNotEmpty()) {
-            Log.d(TAG, "Found ${cachedRecipes.size} recipes in the local database.")
-            return cachedRecipes
-        } else {
-            Log.d(TAG, "No recipes found in the local database, calling the API.")
+        try {
+            Log.d("RecipeRepository", "About to make API call")
+            val response = api.getRecipes(query)
+            Log.d("RecipeRepository", "API call completed")
+            Log.d("RecipeRepository", "API response code: ${response.code()}")
+            Log.d("RecipeRepository", "API response: ${response.body()}")
 
-            try {
-                val response = api.getRecipes(query)
-
-                Log.d(TAG, "API raw response: ${response.raw()}")
-                Log.d(TAG, "API response code: ${response.code()}, message: ${response.message()}")
-
-                if (response.isSuccessful && response.body() != null) {
-                    val rawJson = response.body().toString()
-                    Log.d(TAG, "Raw JSON body: $rawJson")
-
-                    val fetchedRecipes = response.body()!!.results.map {
-                        RecipeEntity(
-                            id = it.id,
-                            title = it.title,
-                            image = it.image ?: "",
-                            searchQuery = query
-                        )
-                    }
-
-                    fetchedRecipes.forEach {
-                        Log.d(TAG, "Inserting recipe ${it.title} into the database.")
-                        dao.insertRecipe(it)
-                    }
-
-                    Log.d(TAG, "Fetched ${fetchedRecipes.size} recipes from the API.")
-                    return fetchedRecipes
-                } else {
-                    Log.e(TAG, "API call failed. Code: ${response.code()}, Message: ${response.message()}")
+            // If response is successful and not null
+            if (response.isSuccessful && response.body() != null) {
+                // Map each recipe from the API into a RecipeEntity
+                val fetchedRecipes = response.body()!!.results.map {
+                    RecipeEntity(
+                        id = it.id,
+                        title = it.title,
+                        image = it.image ?: "",
+                        searchQuery = query
+                    )
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Exception during API call: ${e.message}", e)
-            }
 
+                // Save each fetched recipe in the database (if needed)
+                fetchedRecipes.forEach {
+                    dao.insertRecipe(it)
+                }
+
+                // Return the fetched recipes
+                return fetchedRecipes
+            }
+        } catch (e: Exception) {
+            Log.e("RecipeRepository", "Exception during API call", e)
+            e.printStackTrace() // This will print the full stack trace
             return emptyList()
         }
+
+        // If nothing was found, return an empty list
+        return emptyList()
     }
 
 
-    //For single recipe details
-    fun getRecipeDetails(id: Int): Call<RecipeDetails> {
-        Log.d(TAG, "Fetching details for recipe with id: $id")
-        return api.getRecipeDetails(id)
-    }
-
+    // Users when a user clicks on a specific recipe
+    // Displays full details for the recipe
     suspend fun getOrFetchRecipeDetails(id: Int): RecipeEntity? {
-        val cached = dao.getRecipeById(id)
-        if (cached != null && cached.instructions.isNotBlank()) {
-            return cached
-        }
+     return try{
+            // Make an API call to get the recipe details
+            val response = api.getRecipeDetails(id)
 
-        return try {
-            val response = api.getRecipeDetails(id).execute()
+            // If call is successful, extract the body as 'details'
             if (response.isSuccessful && response.body() != null) {
                 val details = response.body()!!
-                val updatedRecipe = cached?.copy(
+
+                // Create an updated RecipeEntity by copying the original cached entity and updating it with full API details
+                val recipe = RecipeEntity(
+                    id = details.id,
                     aggregateLikes = details.aggregateLikes,
                     analyzedInstructions = details.analyzedInstructions,
                     cheap = details.cheap,
@@ -87,7 +78,6 @@ class RecipeRepository(
                     dairyFree = details.dairyFree,
                     diets = details.diets,
                     dishTypes = details.dishTypes,
-                    extendedIngredients = details.extendedIngredients,
                     gaps = details.gaps,
                     glutenFree = details.glutenFree,
                     healthScore = details.healthScore,
@@ -108,29 +98,41 @@ class RecipeRepository(
                     spoonacularSourceUrl = details.spoonacularSourceUrl,
                     summary = details.summary,
                     sustainable = details.sustainable,
+                    title = details.title,
                     vegan = details.vegan,
                     vegetarian = details.vegetarian,
                     veryHealthy = details.veryHealthy,
                     veryPopular = details.veryPopular,
                     weightWatcherSmartPoints = details.weightWatcherSmartPoints,
-                ) ?: return null
+                )
 
-                dao.insertRecipe(updatedRecipe)
-                updatedRecipe
+                // Map a list of ingredients from the API to ExtendedIngredientEntity
+                val ingredients = details.extendedIngredients.map { ingredient ->
+                    ExtendedIngredientEntity(
+                        id = 0,
+                        ingredientsId = ingredient.id,
+                        recipeId = id,
+                        name = ingredient.name,
+                        amount = ingredient.amount,
+                        unit = ingredient.unit,
+                        aisle = ingredient.aisle
+                    )
+                }
+
+                // Save the recipe and ingredients in the database
+                dao.insertRecipe(recipe)
+                dao.insertIngredients(ingredients)
+
+                // Return the updated recipe if all succeeded, otherwise return null
+                recipe
             } else null
+
         } catch (e: Exception) {
-            Log.e("RecipeRepository", "Error fetching details: ${e.message}", e)
             null
         }
     }
-
-    suspend fun insertRecipe(recipe: RecipeEntity) {
-        Log.d(TAG, "Inserting recipe ${recipe.title} into the database.")
-        dao.insertRecipe(recipe)
-    }
-
-    suspend fun getAllRecipes(): List<RecipeEntity> {
-        Log.d(TAG, "Fetching all recipes from the local database.")
-        return dao.getAllRecipes()
+    // Calls the DAO to return ingredients associated with a recipe from the database
+    suspend fun getIngredientsForRecipe(recipeId: Int): List<ExtendedIngredientEntity> {
+        return dao.getIngredientsForRecipe(recipeId)
     }
 }

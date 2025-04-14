@@ -3,6 +3,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.mealmate.data.Models.entity.ExtendedIngredientEntity
 import com.example.mealmate.data.Models.entity.RecipeEntity
 
 @Dao
@@ -25,4 +26,12 @@ interface RecipeDao {
 
     @Query("SELECT * FROM recipes WHERE id = :id LIMIT 1")
     suspend fun getRecipeById(id: Int): RecipeEntity?
+
+    // Insert ingredients for a recipe
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertIngredients(ingredients: List<ExtendedIngredientEntity>) // ingredient or ingredients??
+
+    // Get ingredients for a specific recipe
+    @Query("SELECT * FROM extended_ingredients WHERE recipeId = :recipeId")
+    suspend fun getIngredientsForRecipe(recipeId: Int): List<ExtendedIngredientEntity>
 }

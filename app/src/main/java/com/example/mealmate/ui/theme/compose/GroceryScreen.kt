@@ -18,8 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.mealmate.ui.theme.CustomBackgroundColor
-import com.example.mealmate.ui.theme.primaryLight
+import com.example.mealmate.ui.theme.Orange
+import com.example.mealmate.ui.theme.lightOrange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +29,7 @@ fun GroceryScreen(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize().background(primaryLight)
+        modifier = modifier.fillMaxSize().background(lightOrange)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
@@ -41,7 +41,7 @@ fun GroceryScreen(
                         textAlign = TextAlign.Center
                     )
                 },
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = CustomBackgroundColor),
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Orange),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)

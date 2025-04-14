@@ -20,8 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.mealmate.ui.theme.CustomBackgroundColor
-import com.example.mealmate.ui.theme.primaryLight
+import com.example.mealmate.ui.theme.Orange
+import com.example.mealmate.ui.theme.lightOrange
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.size
@@ -68,7 +68,7 @@ fun ProfileScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(primaryLight)
+            .background(lightOrange)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             // Top App Bar
@@ -81,7 +81,7 @@ fun ProfileScreen(
                         textAlign = TextAlign.Center
                     )
                 },
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = CustomBackgroundColor),
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Orange),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
@@ -161,7 +161,7 @@ fun ProfileScreen(
                         .padding(horizontal = 32.dp)
                         .fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = CustomBackgroundColor,
+                        containerColor = Orange,
                         contentColor = Color.White
                     )
                 ) {

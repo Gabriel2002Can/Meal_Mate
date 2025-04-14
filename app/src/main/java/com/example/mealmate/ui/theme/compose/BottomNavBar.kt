@@ -12,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import com.example.mealmate.ui.theme.CustomBackgroundColor
+import com.example.mealmate.ui.theme.Orange
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -32,7 +32,7 @@ fun BottomNavBar(
 
     Box(modifier = Modifier.height(85.dp)) {
         NavigationBar(
-            containerColor = CustomBackgroundColor,
+            containerColor = Orange,
         ) {
             NavigationBarItem(
                 icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },

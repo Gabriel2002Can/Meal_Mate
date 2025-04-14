@@ -1,6 +1,5 @@
 package com.example.mealmate.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -12,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-val CustomBackgroundColor = Color(0xFFE1440F)
+val Orange = Color(0xFFE1440F)
 
 private val DarkColorScheme = darkColorScheme(
 
@@ -21,8 +20,6 @@ private val DarkColorScheme = darkColorScheme(
 
     //Light Orange
     secondary = Color(0xFFF2D3C8),
-
-    tertiary = Pink80
 )
 
 @Composable
@@ -39,8 +36,7 @@ fun MealMateTheme(
 
         //"White
         secondary = Color(0xFFFFF3EF),
-        tertiary = Pink40,
-        background = CustomBackgroundColor,  //Light background color for light theme
+        background = Orange,  //Light background color for light theme
         surface = Color.White            //Surface color to match
     )
 

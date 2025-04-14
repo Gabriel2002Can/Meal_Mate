@@ -14,7 +14,8 @@ interface ProfileDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProfile(profile: ProfileEntity)
 
-    @Query("SELECT * FROM profile")
+    // Always retrieve the most recent profile
+    @Query("SELECT * FROM profile ORDER BY userId DESC LIMIT 1")
     suspend fun getProfile(): ProfileEntity?
 
     @Update

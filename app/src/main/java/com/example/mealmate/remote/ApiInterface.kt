@@ -12,21 +12,17 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiInterface {
-
-
-    //  Api key
+    // Api key
     @Headers("x-api-key: 600bb229edff4606877633f91de9a3d7")
-
-    //Multiple recipes
+    // Display multiple recipes as search results
     @GET("recipes/complexSearch")
     suspend fun getRecipes(@Query("query") query: String): Response<MultipleRecipes>
 
+    // Api key
     @Headers("x-api-key: 600bb229edff4606877633f91de9a3d7")
-    //Single recipe
+    // Specific recipe details
     @GET("recipes/{id}/information")
-    fun getRecipeDetails(
-        @Path("id") id: Int
-    ): Call<RecipeDetails>;
+    suspend fun getRecipeDetails(@Path("id") id: Int): Response<RecipeDetails>;
 
     //For Database
     companion object {
