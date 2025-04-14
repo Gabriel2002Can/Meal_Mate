@@ -105,7 +105,10 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                     composable("grocery") {
-                                        GroceryScreen(navController = navController)
+                                        GroceryScreen(
+                                            navController = navController,
+                                            viewModel = viewModel // Use the already initialized viewModel here
+                                        )
                                     }
                                     composable("profile") {
                                         ProfileScreen(navController = navController)

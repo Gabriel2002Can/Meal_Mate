@@ -20,6 +20,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -132,8 +133,7 @@ fun RecipeScreen(
                 ) {
                     items(recipes) { recipe ->
                         RecipeItem(recipe = recipe) {
-                            //onRecipeSelected(recipe.id)
-                            navController.navigate("recipeDetail/${recipe.id}") // replace with this
+                            navController.navigate("recipeDetail/${recipe.id}")
                         }
                     }
                 }
@@ -187,7 +187,6 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel, navController: NavController,
     val ingredients = viewModel.ingredients.value  // Ingredients state from the ViewModel
 
     // Load recipe details and ingredients when recipeId changes
-    // THIS IS PROBABLY WRONG???
     LaunchedEffect(recipeId) {
         viewModel.loadRecipeDetails(recipeId)
         viewModel.loadIngredients(recipeId) // Load ingredients as well
@@ -233,7 +232,6 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel, navController: NavController,
                     .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
-                // THIS IF BLOCK IS NOT RUNNING AND I DO NOT UNDERSTAND WHY - HOW IS RECIPE NULL?
                 if (recipe != null) {
                     LazyColumn(
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
@@ -291,7 +289,27 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel, navController: NavController,
                                     HtmlCompat.FROM_HTML_MODE_LEGACY
                                 ).toString()
                             )
-                            Spacer(modifier = Modifier.height(12.dp))
+
+                            // Button to add ingredients to grocery list
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Button(
+                                    onClick = {
+                                        viewModel.addIngredientsToGroceryList(ingredients)
+                                        navController.navigate("grocery")
+                                    },
+                                    modifier = Modifier.padding(top = 4.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Orange,
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text("Add to Grocery List")
+                                }
+                            }
+
                         }
                     }
                 }

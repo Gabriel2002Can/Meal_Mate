@@ -2,6 +2,7 @@ package com.example.mealmate.ui.theme.viewmodel
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mealmate.data.Models.MultipleRecipes
@@ -79,4 +80,18 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
             _ingredients.value = repository.getIngredientsForRecipe(recipeId)
         }
     }
+
+    // Grocery list
+    private val _groceryList = mutableStateListOf<String>()
+    val groceryList: List<String> = _groceryList
+
+    fun addIngredientsToGroceryList(ingredients: List<ExtendedIngredientEntity>) {
+        _groceryList.addAll(ingredients.map { it.name })
+    }
+
+    // Remove item from grocery list
+    fun removeItemFromGroceryList(item: String) {
+        _groceryList.remove(item)
+    }
+
 }
