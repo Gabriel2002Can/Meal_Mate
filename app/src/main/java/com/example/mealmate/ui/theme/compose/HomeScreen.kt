@@ -41,6 +41,7 @@ import com.example.mealmate.ui.theme.lightOrange
 import com.example.mealmate.ui.theme.viewmodel.RecipeViewModel
 import coil.compose.rememberAsyncImagePainter
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.layout.ContentScale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +51,7 @@ fun HomeScreen(
     viewModel: RecipeViewModel
 ) {
     LaunchedEffect(Unit) {
-        viewModel.getRecipeById(716300)
+        viewModel.getRecipeById(631863)
     }
 
     val featuredRecipe = viewModel.featuredRecipe.value
@@ -77,28 +78,29 @@ fun HomeScreen(
                     .height(50.dp)
             )
 
-            // Content Section (Scrollable if it exceeds the available space)
             Column(
                 modifier = Modifier
-                    .weight(1f) // This makes the content take up the remaining available vertical space
+                    .weight(1f)
                     .fillMaxSize()
                     .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally // Center children horizontally
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // First card: Featured Recipe
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.3f)
+                        .fillMaxHeight(0.35f)
                         .clickable {
-                            navController.navigate("recipe_detail/${featuredRecipe.id}")
+                            navController.navigate("recipeDetail/${featuredRecipe.id}")
                         },
                     colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
                     Image(
                         painter = rememberAsyncImagePainter(featuredRecipe.image),
                         contentDescription = "Featured Recipe Image",
-                        modifier = Modifier.fillMaxSize()
+                        contentScale = ContentScale.Crop, // Fills and crops the image to fit
+                        modifier = Modifier
+                            .fillMaxSize()
                     )
                 }
 
@@ -117,11 +119,14 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Second card (Grocery list section)
+                // Second card: Grocery list
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight(),
+                        .wrapContentHeight()
+                        .clickable {
+                            navController.navigate("grocery")
+                },
                     colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
                     Column(
@@ -138,7 +143,7 @@ fun HomeScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        val firstFiveIngredients = viewModel.groceryList.map { it.first }.take(5)
+                        val firstFiveIngredients = viewModel.groceryList.map { it.first }.take(4)
 
                         firstFiveIngredients.forEach { ingredientName ->
                             Row(
