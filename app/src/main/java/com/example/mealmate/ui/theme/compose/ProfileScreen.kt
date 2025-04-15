@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
@@ -68,7 +69,7 @@ fun ProfileScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(lightOrange)
+            .background(MaterialTheme.colorScheme.background),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             // Top App Bar
@@ -108,7 +109,12 @@ fun ProfileScreen(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Name", color = Color.Black) },
+                    label = {
+                        Text(
+                            text = "Name",
+                            color = MaterialTheme.colorScheme.onBackground // Apply dynamic color based on the theme
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp),
@@ -121,7 +127,12 @@ fun ProfileScreen(
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email", color = Color.Black) },
+                    label = {
+                        Text(
+                            text = "Email",
+                            color = MaterialTheme.colorScheme.onBackground // Apply dynamic color based on the theme
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp),
@@ -134,7 +145,12 @@ fun ProfileScreen(
                 OutlinedTextField(
                     value = dob,
                     onValueChange = { dob = it },
-                    label = { Text("Date of Birth", color = Color.Black) },
+                    label = {
+                        Text(
+                            text = "Date of Birth",
+                            color = MaterialTheme.colorScheme.onBackground // Apply dynamic color based on the theme
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp),

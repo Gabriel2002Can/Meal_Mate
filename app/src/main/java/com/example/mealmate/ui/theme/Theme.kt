@@ -14,32 +14,26 @@ import androidx.compose.ui.platform.LocalContext
 val Orange = Color(0xFFE1440F)
 
 private val DarkColorScheme = darkColorScheme(
-
-    //Black
     primary = Color(0xFF191616),
-
-    //Light Orange
     secondary = Color(0xFFF2D3C8),
+    background = Color(0xFF121212) // Dark grey background for dark mode
 )
+
 
 @Composable
 fun MealMateTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
 
     val LightColorScheme = lightColorScheme(
-        //Light Orange
         primary = Color(0xFFF2D3C8),
-
-        //"White
         secondary = Color(0xFFFFF3EF),
-        background = Orange,  //Light background color for light theme
-        surface = Color.White            //Surface color to match
+        background = Color(0xFFF2D3C8), // lightOrange for light mode
+        surface = Color.White
     )
-
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current

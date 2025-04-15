@@ -57,7 +57,7 @@ fun GroceryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(lightOrange),
+            .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
@@ -92,6 +92,7 @@ fun GroceryScreen(
                             Text(
                                 text = aisle,
                                 modifier = Modifier.padding(vertical = 8.dp),
+                                color = MaterialTheme.colorScheme.onBackground,
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp
@@ -120,6 +121,7 @@ fun GroceryScreen(
 
                                 Text(
                                     text = ingredientName,
+                                    color = MaterialTheme.colorScheme.onBackground,
                                     modifier = Modifier.weight(1f)
                                 )
 
@@ -154,6 +156,7 @@ fun GroceryScreen(
                 ) {
                     Text(
                         text = "Grocery list is empty.",
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }

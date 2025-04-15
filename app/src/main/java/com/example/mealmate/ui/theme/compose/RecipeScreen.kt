@@ -66,7 +66,7 @@ fun RecipeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(lightOrange)
+            .background(MaterialTheme.colorScheme.background),
     )
     {
         // Add TopAppBar at the top of the screen
@@ -92,7 +92,12 @@ fun RecipeScreen(
             onValueChange = { query = it },
 
             // Search bar styling
-            label = { Text("Search Recipes") },
+            label = {
+                Text(
+                    text = "Search Recipes",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp) // Padding above search bar
@@ -122,10 +127,14 @@ fun RecipeScreen(
         ) {
             if (recipes.isEmpty()) {
                 Box(
-                    Modifier.fillMaxSize().background(lightOrange),
+                    Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("No recipes found or still loading...")
+                    Text("No recipes found or still loading...",
+                    color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
             } else {
                 LazyColumn(
@@ -151,7 +160,7 @@ fun RecipeItem(recipe: RecipeEntity, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable { onClick() }
-            .background(lightOrange)
+            .background(MaterialTheme.colorScheme.background),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -173,6 +182,7 @@ fun RecipeItem(recipe: RecipeEntity, onClick: () -> Unit) {
             //Displaying the recipe title
             Text(
                 text = recipe.title,
+                color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.weight(1f)
             )
@@ -228,7 +238,7 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel, navController: NavController,
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(lightOrange)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
@@ -254,6 +264,7 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel, navController: NavController,
                             // Title
                             Text(
                                 text = recipe.title,
+                                color = MaterialTheme.colorScheme.onBackground,
                                 style = MaterialTheme.typography.headlineSmall.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
@@ -266,15 +277,22 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel, navController: NavController,
                             // Summary
                             Text(
                                 text = HtmlCompat.fromHtml(recipe.summary, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                                    .toString()
-                            )
+                                    .toString(),
+                                color = MaterialTheme.colorScheme.onBackground
+                                )
                             Spacer(modifier = Modifier.height(12.dp))
 
                             // Ingredients
-                            Text(text = "Ingredients:", style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                text = "Ingredients:",
+                                color = MaterialTheme.colorScheme.onBackground,
+                                style = MaterialTheme.typography.titleMedium
+                            )
                             if (ingredients.isNotEmpty()) {
                                 ingredients.forEach { ingredient ->
-                                    Text(text = "• ${ingredient.amount} ${ingredient.unit} ${ingredient.name}")
+                                    Text(text = "• ${ingredient.amount} ${ingredient.unit} ${ingredient.name}",
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    )
                                 }
                             } else {
                                 Text(text = "No ingredients provided.")
@@ -282,12 +300,17 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel, navController: NavController,
                             Spacer(modifier = Modifier.height(12.dp))
 
                             // Instructions
-                            Text(text = "Instructions:", style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                text = "Instructions:",
+                                color = MaterialTheme.colorScheme.onBackground,
+                                style = MaterialTheme.typography.titleMedium
+                            )
                             Text(
                                 text = HtmlCompat.fromHtml(
                                     recipe.instructions.ifBlank { "No instructions provided." },
                                     HtmlCompat.FROM_HTML_MODE_LEGACY
-                                ).toString()
+                                ).toString(),
+                                color = MaterialTheme.colorScheme.onBackground // Apply dynamic color based on the theme
                             )
 
                             // Button to add ingredients to grocery list

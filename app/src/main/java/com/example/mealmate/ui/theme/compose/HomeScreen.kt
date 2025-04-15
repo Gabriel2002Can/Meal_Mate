@@ -21,6 +21,7 @@ import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -60,7 +61,7 @@ fun HomeScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(lightOrange)
+                .background(MaterialTheme.colorScheme.background),
         ) {
             // Top App Bar (Fixed at the top)
             TopAppBar(
@@ -110,7 +111,7 @@ fun HomeScreen(
                     Text(
                         text = "Today's Feature: ${featuredRecipe.title}",
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp),
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
